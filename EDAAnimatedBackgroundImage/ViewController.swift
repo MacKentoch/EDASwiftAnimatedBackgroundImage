@@ -75,7 +75,7 @@ class ViewController: UIViewController {
         {
             if letimer.valid
             {
-                println("timer1 is in valid state while resume? it should not be....")
+                println("timer1 is in valid state while resume")
             }
         }
         else
@@ -92,14 +92,11 @@ class ViewController: UIViewController {
     func AnimationBackGroundParSeconde()
     {
         println("-> animation for 1 second")
-        let tauxRaffraichissement = CGFloat(0.5)
-        let motionRate = (backgroundImageView.frame.width / self.view.frame.size.width) * tauxRaffraichissement
-        var offset = self.backImageTrailingConstraint.constant * motionRate
-        
+
         
         self.backImageTrailingConstraint.constant = -400
         
-        UIView.animateWithDuration(50.0
+        UIView.animateWithDuration(30.0
             , delay: 0.0
             , options: UIViewAnimationOptions.Repeat | UIViewAnimationOptions.Autoreverse
             , animations:
