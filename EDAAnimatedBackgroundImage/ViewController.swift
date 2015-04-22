@@ -50,7 +50,6 @@ class ViewController: UIViewController {
     
     //MARK: White StatusBar : better look
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        //pour que çà fonctionne il faut : NavigationController.navigationBar.barStyle  = UIBarStyle.Black
         return .LightContent
     }
     
@@ -63,7 +62,6 @@ class ViewController: UIViewController {
 
     func stopanimation(notification :NSNotification)
     {
-        println("!!!!!!!! stop detecte !!!!!!!!!!")
         FlagPauseAnimation = true
         PauseLayer(self.view.layer)
     }
@@ -71,18 +69,18 @@ class ViewController: UIViewController {
     
     func resumeanimation(notification :NSNotification)
     {
-        println("!!!!!!!! resume detecte !!!!!!!!!!")
+
         self.backImageTrailingConstraint.constant = ZERO_TRAILLING_CONSTRAINT
         if let letimer = timer1
         {
             if letimer.valid
             {
-                println("timer1 valid au resume")
+                println("timer1 is in valid state while resume? it should not be....")
             }
         }
         else
         {
-            
+            //all is OK let's start another timer :
             timer1 = NSTimer(timeInterval: 1.0, target: self, selector: Selector("AnimationBackGroundParSeconde"), userInfo: nil, repeats: true)
             NSRunLoop.mainRunLoop().addTimer(timer1!, forMode:NSDefaultRunLoopMode)
         }
@@ -93,10 +91,12 @@ class ViewController: UIViewController {
     
     func AnimationBackGroundParSeconde()
     {
-        println("-> animation will start")
+        println("-> animation for 1 second")
         let tauxRaffraichissement = CGFloat(0.5)
         let motionRate = (backgroundImageView.frame.width / self.view.frame.size.width) * tauxRaffraichissement
         var offset = self.backImageTrailingConstraint.constant * motionRate
+        
+        
         self.backImageTrailingConstraint.constant = -400
         
         UIView.animateWithDuration(50.0
@@ -104,11 +104,13 @@ class ViewController: UIViewController {
             , options: UIViewAnimationOptions.Repeat | UIViewAnimationOptions.Autoreverse
             , animations:
             {
+                
                 self.view.layoutIfNeeded()
+                //layoutIfNeeded is not animated, the trick to animate is to set alpha to 1.0 as it is already
                 self.view.alpha = 1.0
             },
             completion: { finished in
-                println("... 1 sec elapsed")
+                println("      ... 1 sec elapsed")
             }
         )
     }
@@ -116,6 +118,7 @@ class ViewController: UIViewController {
     func PauseLayer(layer: CALayer)
     {
         timer1?.invalidate()
+        //invalidation of the timer may be already good but to be sure timer is off :
         timer1 = nil
     }
 
