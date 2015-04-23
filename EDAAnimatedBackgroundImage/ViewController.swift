@@ -127,11 +127,21 @@ class ViewController: UIViewController {
     }
     
     
-    
+    var durationVar : NSTimeInterval!
     func AnimationBackGroundParSeconde()
     {
         println("-> animation for 1 second")
 
+        if self.secondElapse! == 40
+        {
+            println("##### <-> CHANGE direction #####")
+            self.secondElapse = 0
+        }
+        else
+        {
+            println("##### -> SAME direction #####")
+        }
+        
         var duration = 40.0 //-  NSTimeInterval(self.secondElapse!)//lastDuration
         //self.secondElapse = 0
         
@@ -155,8 +165,8 @@ class ViewController: UIViewController {
                 self.secondElapse = self.secondElapse! + 1
                 self.lastPosToReach = self.backImageTrailingConstraint.constant
                 println("      ... 1 sec elapsed" +
-                        "\ncurrent constraint constant : \(self.lastPosToReach)\n" +
-                        "\ncurrent time elapsed since animation started : \(self.secondElapse)\n" +
+                        "\ncurrent constraint constant : \(self.lastPosToReach)" +
+                        "\ncurrent time elapsed since animation started in this direction : \(self.secondElapse)" +
                         "\n")
                 
             }
