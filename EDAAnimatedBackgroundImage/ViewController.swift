@@ -12,10 +12,21 @@ class ViewController: UIViewController {
 
     let DEFAULT_BACKGROUND_IMAGE = "2801-11"
     
+    enum direction
+    {
+        case toRight
+        case toLeft
+    }
+    
     var imageBackGround : UIImage!
     var ZERO_TRAILLING_CONSTRAINT : CGFloat!
     var timer1 : NSTimer? = nil
     var FlagPauseAnimation : Bool? = nil
+    var lastPosToReach : CGFloat?
+    var lastDuration : NSTimeInterval?
+    var lastDirection : direction?
+    var secondElapse : Int?
+    var justWakeUp :Bool?
     
 
     @IBOutlet var backgroundImageView: UIImageView!
@@ -24,6 +35,13 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //Init
+        lastPosToReach = -400
+        lastDuration = 30.0
+        lastDirection = direction.toLeft
+        secondElapse = 0
+        justWakeUp = false
         
         //set your image
         self.imageBackGround = UIImage(named: DEFAULT_BACKGROUND_IMAGE)
@@ -63,6 +81,9 @@ class ViewController: UIViewController {
     func stopanimation(notification :NSNotification)
     {
         FlagPauseAnimation = true
+        
+        lastPosToReach =  self.backImageTrailingConstraint.constant
+
         PauseLayer(self.view.layer)
     }
     
@@ -70,7 +91,13 @@ class ViewController: UIViewController {
     func resumeanimation(notification :NSNotification)
     {
 
-        self.backImageTrailingConstraint.constant = ZERO_TRAILLING_CONSTRAINT
+//        justWakeUp = true
+//        self.backImageTrailingConstraint.constant = ZERO_TRAILLING_CONSTRAINT
+
+        self.backImageTrailingConstraint.constant = lastPosToReach!
+        ///force layout
+        self.view.layoutIfNeeded()
+        
         if let letimer = timer1
         {
             if letimer.valid
@@ -93,10 +120,60 @@ class ViewController: UIViewController {
     {
         println("-> animation for 1 second")
 
+        var duration = lastDuration
         
-        self.backImageTrailingConstraint.constant = -400
+//        lastPosToReach = -400
+//        lastDuration = 40.0
+//        lastDirection = direction.toLeft
         
-        UIView.animateWithDuration(30.0
+        if self.secondElapse == 0
+        {
+            self.backImageTrailingConstraint.constant = lastPosToReach!
+            duration = 40.0
+            //reset memory
+            //self.secondElapse = 0
+            
+        }
+        else
+        {
+            if self.secondElapse! > 0
+            {
+                
+                if self.secondElapse! == 40
+                {
+                    self.backImageTrailingConstraint.constant = CGFloat(10 * (40 - 0))
+                    duration = NSTimeInterval(40 - 0)
+                }
+                else
+                {
+                    self.backImageTrailingConstraint.constant = CGFloat(10 * (40 - self.secondElapse!))
+                    duration = NSTimeInterval(40 - self.secondElapse!)
+                    
+                }
+         
+
+            }
+            else
+            {
+                self.backImageTrailingConstraint.constant = ZERO_TRAILLING_CONSTRAINT
+                duration = NSTimeInterval(40 - 0)
+//                self.backImageTrailingConstraint.constant = lastPosToReach!
+//                duration = 40.0
+            }
+ 
+            //reset memory
+            //self.secondElapse = 0
+        }
+        
+        //self.backImageTrailingConstraint.constant = lastPosToReach!
+        
+        //self.backImageTrailingConstraint.constant = -400
+        
+        println("Objectif : \(self.backImageTrailingConstraint.constant)" +
+                            "Pour une duree : \(duration)")
+        
+        justWakeUp = false
+        UIView.animateWithDuration(duration!
             , delay: 0.0
             , options: UIViewAnimationOptions.Repeat | UIViewAnimationOptions.Autoreverse
             , animations:
@@ -107,9 +184,13 @@ class ViewController: UIViewController {
                 self.view.alpha = 1.0
             },
             completion: { finished in
-                println("      ... 1 sec elapsed")
+                self.secondElapse = self.secondElapse! + 1
+                self.lastPosToReach = self.backImageTrailingConstraint.constant
+                println("      ... 1 sec elapsed" + "\ncurrent position : \(self.lastPosToReach)\n\n")
+                
             }
         )
+        
     }
     
     func PauseLayer(layer: CALayer)
