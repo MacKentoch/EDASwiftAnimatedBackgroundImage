@@ -15,6 +15,9 @@ EDAAnimatedBackgroundImage
       + on simulator go Home ; press SHIFT+COMMAND+H, then enter back app
           * animation starts again and don't freeze
   
+###Experimental version :
+  - Woring on a cool alternative not to reset position after app resume from background.
+      + target output more verbose to follow image background animation.
 
 ----
 
