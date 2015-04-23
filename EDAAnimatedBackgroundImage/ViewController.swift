@@ -41,7 +41,7 @@ class ViewController: UIViewController {
         lastDuration = 30.0
         lastDirection = direction.toLeft
         secondElapse = 0
-        justWakeUp = false
+        justWakeUp = true
         
         //set your image
         self.imageBackGround = UIImage(named: DEFAULT_BACKGROUND_IMAGE)
@@ -91,12 +91,24 @@ class ViewController: UIViewController {
     func resumeanimation(notification :NSNotification)
     {
 
-//        justWakeUp = true
-//        self.backImageTrailingConstraint.constant = ZERO_TRAILLING_CONSTRAINT
+        if  justWakeUp == true
+        {
+            self.backImageTrailingConstraint.constant = ZERO_TRAILLING_CONSTRAINT
+            self.secondElapse = 0
+        }
+        else
+        {
+          self.backImageTrailingConstraint.constant = -CGFloat(10 * (40 - self.secondElapse!))
+            self.secondElapse = 0
+        }
+         justWakeUp = false
+        //
+        
+        //self.backImageTrailingConstraint.constant = ZERO_TRAILLING_CONSTRAINT - CGFloat(10 * (40 - self.secondElapse!))
+        //self.view.layoutIfNeeded()
+        
+        self.secondElapse = 0
 
-        self.backImageTrailingConstraint.constant = lastPosToReach!
-        ///force layout
-        self.view.layoutIfNeeded()
         
         if let letimer = timer1
         {
@@ -120,60 +132,16 @@ class ViewController: UIViewController {
     {
         println("-> animation for 1 second")
 
-        var duration = lastDuration
+        var duration = 40.0 //-  NSTimeInterval(self.secondElapse!)//lastDuration
+        //self.secondElapse = 0
         
-//        lastPosToReach = -400
-//        lastDuration = 40.0
-//        lastDirection = direction.toLeft
+        self.backImageTrailingConstraint.constant = -400
         
-        if self.secondElapse == 0
-        {
-            self.backImageTrailingConstraint.constant = lastPosToReach!
-            duration = 40.0
-            //reset memory
-            //self.secondElapse = 0
-            
-        }
-        else
-        {
-            if self.secondElapse! > 0
-            {
-                
-                if self.secondElapse! == 40
-                {
-                    self.backImageTrailingConstraint.constant = CGFloat(10 * (40 - 0))
-                    duration = NSTimeInterval(40 - 0)
-                }
-                else
-                {
-                    self.backImageTrailingConstraint.constant = CGFloat(10 * (40 - self.secondElapse!))
-                    duration = NSTimeInterval(40 - self.secondElapse!)
-                    
-                }
-         
-
-            }
-            else
-            {
-                self.backImageTrailingConstraint.constant = ZERO_TRAILLING_CONSTRAINT
-                duration = NSTimeInterval(40 - 0)
-//                self.backImageTrailingConstraint.constant = lastPosToReach!
-//                duration = 40.0
-            }
- 
-            //reset memory
-            //self.secondElapse = 0
-        }
+        println("Objective constraint.constant: \(self.backImageTrailingConstraint.constant)" +
+                            "\nFor duration (in seconds) : \(duration)")
         
-        //self.backImageTrailingConstraint.constant = lastPosToReach!
-        
-        //self.backImageTrailingConstraint.constant = -400
-        
-        println("Objectif : \(self.backImageTrailingConstraint.constant)" +
-                            "Pour une duree : \(duration)")
-        
-        justWakeUp = false
-        UIView.animateWithDuration(duration!
+       
+        UIView.animateWithDuration(duration
             , delay: 0.0
             , options: UIViewAnimationOptions.Repeat | UIViewAnimationOptions.Autoreverse
             , animations:
@@ -186,7 +154,10 @@ class ViewController: UIViewController {
             completion: { finished in
                 self.secondElapse = self.secondElapse! + 1
                 self.lastPosToReach = self.backImageTrailingConstraint.constant
-                println("      ... 1 sec elapsed" + "\ncurrent position : \(self.lastPosToReach)\n\n")
+                println("      ... 1 sec elapsed" +
+                        "\ncurrent constraint constant : \(self.lastPosToReach)\n" +
+                        "\ncurrent time elapsed since animation started : \(self.secondElapse)\n" +
+                        "\n")
                 
             }
         )
