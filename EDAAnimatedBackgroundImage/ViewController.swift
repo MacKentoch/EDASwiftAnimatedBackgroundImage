@@ -12,7 +12,7 @@ class ViewController: UIViewController {
 
     let DEFAULT_BACKGROUND_IMAGE = "2801-11"
     let REFERENCE_ANIMATION_DURATION = 40
-    let REFERENCE_ANIMATION_FAST_RETURN_DURATION = 3
+    let REFERENCE_ANIMATION_FAST_RETURN_DURATION = 2
     let REFERENCE_MAX_TRAILING_CONTRAINT_CONSTANT = -400
     
     
@@ -37,7 +37,7 @@ class ViewController: UIViewController {
     @IBOutlet var backImageTrailingConstraint: NSLayoutConstraint!
     
     
-    func initializePorperties()
+    func initializeProperties()
     {
         //Init : must be called only in viewDidLoad
         lastPosToReach = -400
@@ -50,8 +50,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        initializePorperties()
-
+        initializeProperties()
         
         //set your image
         self.imageBackGround = UIImage(named: DEFAULT_BACKGROUND_IMAGE)
@@ -66,12 +65,12 @@ class ViewController: UIViewController {
 
     }
 
-    //launch timer to animate your background in viewWillAppear (not viewDidLoad)
+
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(true)
-
-        timer1 = NSTimer(timeInterval: 1.0, target: self, selector: Selector("AnimationBackGroundParSeconde"), userInfo: nil, repeats: true)
-        NSRunLoop.mainRunLoop().addTimer(timer1!, forMode:NSDefaultRunLoopMode)
+            //not needed here
+//        timer1 = NSTimer(timeInterval: 1.0, target: self, selector: Selector("AnimationBackGroundParSeconde"), userInfo: nil, repeats: true)
+//        NSRunLoop.mainRunLoop().addTimer(timer1!, forMode:NSDefaultRunLoopMode)
         
     }
     
@@ -85,8 +84,6 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    
-
     func stopanimation(notification :NSNotification)
     {
         FlagPauseAnimation = true
@@ -133,10 +130,10 @@ class ViewController: UIViewController {
         else
         {
             println("\ntimer1 is nil, let's start again after a little break at home\n")
-
+            
             //all is OK let's start another timer :
-            timer1 = NSTimer(timeInterval: 1.0, target: self, selector: Selector("AnimationBackGroundParSeconde"), userInfo: nil, repeats: true)
-            NSRunLoop.mainRunLoop().addTimer(timer1!, forMode:NSDefaultRunLoopMode)
+            //here an anmitation to fast return to initial layout, then main animation will resume
+            AnimationFastReturnZeroPoint()
         }
         
     }
@@ -148,9 +145,6 @@ class ViewController: UIViewController {
         
         var duration = NSTimeInterval(REFERENCE_ANIMATION_FAST_RETURN_DURATION)
         self.backImageTrailingConstraint.constant = ZERO_TRAILLING_CONSTRAINT
-        
-//        println("Objective constraint.constant: \(self.backImageTrailingConstraint.constant)" +
-//            "\nFor duration (in seconds) : \(duration)")
         
         UIView.animateWithDuration(duration
             , delay: 0.0
@@ -165,14 +159,11 @@ class ViewController: UIViewController {
             completion: { finished in
            
                 //resume timer, and start animation per seconds :
-                
                 self.timer1 = NSTimer(timeInterval: 1.0, target: self, selector: Selector("AnimationBackGroundParSeconde"), userInfo: nil, repeats: true)
                 NSRunLoop.mainRunLoop().addTimer(self.timer1!, forMode:NSDefaultRunLoopMode)
                 
             }
         )
-
-        
     }
     
 
@@ -203,7 +194,7 @@ class ViewController: UIViewController {
         if lastDirection == direction.toRight{
             directionString = "from left to right"
         }
-        println("                        DIRECTION : \(directionString)")
+        println("                               -> DIRECTION : \(directionString)")
         
         
         var duration = NSTimeInterval(REFERENCE_ANIMATION_DURATION)

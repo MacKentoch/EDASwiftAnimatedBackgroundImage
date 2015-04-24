@@ -7,17 +7,18 @@ EDAAnimatedBackgroundImage
 
  - written in Swift 1.2
 
-###Feature :
+###Main Features (since v0.1):
 
-  - for now, this project is only demo purpose
-      + how to animate background image in swift 1.2
-      + how to manage animation when application goes background
-      + on simulator go Home ; press SHIFT+COMMAND+H, then enter back app
+  - for now, this project is only `demo purpose`
+      + how to animate background image in `swift 1.2`
+      + how to manage animation (stop, resume) when application goes background
+      + on simulator go Home ; press `SHIFT+COMMAND+H`, then enter back app
           * animation starts again and don't freeze
   
-###Experimental version :
-  - Woring on a cool alternative not to reset position after app resume from background.
-      + target output more verbose to follow image background animation.
+###Added since v0.2 :
+  - added a `cool alternative not to brutal reset position` after app `resume from background. No more instant reset.
+      + Since v0.2, `fast but smooth return animation` so that background animated image returns initial point and `then main animation restart`
+      + `target output` more verbose to follow image background animation.
 
 ----
 
